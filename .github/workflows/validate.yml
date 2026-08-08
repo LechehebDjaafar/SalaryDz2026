@@ -1,0 +1,20 @@
+name: Validate salary data
+
+on:
+  pull_request:
+    paths:
+      - "salaries.json"
+  push:
+    branches: [main]
+    paths:
+      - "salaries.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node scripts/validate.js

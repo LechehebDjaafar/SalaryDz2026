@@ -1,0 +1,167 @@
+[
+  {
+    "job_title": "مطور برمجيات",
+    "job_title_en": "Software Developer",
+    "wilaya": "الجزائر",
+    "wilaya_code": "16",
+    "experience_years": 3,
+    "salary_min": 90000,
+    "salary_max": 140000,
+    "company_type": "خاص",
+    "date_added": "2026-06-02"
+  },
+  {
+    "job_title": "مطور برمجيات",
+    "job_title_en": "Software Developer",
+    "wilaya": "وهران",
+    "wilaya_code": "31",
+    "experience_years": 1,
+    "salary_min": 55000,
+    "salary_max": 75000,
+    "company_type": "خاص",
+    "date_added": "2026-05-14"
+  },
+  {
+    "job_title": "مطور برمجيات",
+    "job_title_en": "Software Developer",
+    "wilaya": "عن بعد",
+    "wilaya_code": "00",
+    "experience_years": 4,
+    "salary_min": 250000,
+    "salary_max": 400000,
+    "company_type": "عن بعد",
+    "date_added": "2026-07-01"
+  },
+  {
+    "job_title": "ممرض",
+    "job_title_en": "Nurse",
+    "wilaya": "قسنطينة",
+    "wilaya_code": "25",
+    "experience_years": 5,
+    "salary_min": 48000,
+    "salary_max": 60000,
+    "company_type": "عمومي",
+    "date_added": "2026-04-20"
+  },
+  {
+    "job_title": "أستاذ تعليم متوسط",
+    "job_title_en": "Middle School Teacher",
+    "wilaya": "سطيف",
+    "wilaya_code": "19",
+    "experience_years": 6,
+    "salary_min": 52000,
+    "salary_max": 65000,
+    "company_type": "عمومي",
+    "date_added": "2026-03-11"
+  },
+  {
+    "job_title": "محاسب",
+    "job_title_en": "Accountant",
+    "wilaya": "بجاية",
+    "wilaya_code": "06",
+    "experience_years": 2,
+    "salary_min": 45000,
+    "salary_max": 60000,
+    "company_type": "خاص",
+    "date_added": "2026-06-18"
+  },
+  {
+    "job_title": "مهندس مدني",
+    "job_title_en": "Civil Engineer",
+    "wilaya": "عنابة",
+    "wilaya_code": "23",
+    "experience_years": 4,
+    "salary_min": 70000,
+    "salary_max": 95000,
+    "company_type": "خاص",
+    "date_added": "2026-05-29"
+  },
+  {
+    "job_title": "مصمم غرافيك",
+    "job_title_en": "Graphic Designer",
+    "wilaya": "الجزائر",
+    "wilaya_code": "16",
+    "experience_years": 2,
+    "salary_min": 50000,
+    "salary_max": 70000,
+    "company_type": "خاص",
+    "date_added": "2026-07-15"
+  },
+  {
+    "job_title": "صيدلي",
+    "job_title_en": "Pharmacist",
+    "wilaya": "ورقلة",
+    "wilaya_code": "30",
+    "experience_years": 7,
+    "salary_min": 80000,
+    "salary_max": 110000,
+    "company_type": "خاص",
+    "date_added": "2026-02-08"
+  },
+  {
+    "job_title": "كهربائي صناعي",
+    "job_title_en": "Industrial Electrician",
+    "wilaya": "غرداية",
+    "wilaya_code": "47",
+    "experience_years": 5,
+    "salary_min": 65000,
+    "salary_max": 85000,
+    "company_type": "عمومي",
+    "date_added": "2026-04-03"
+  },
+  {
+    "job_title": "مسؤول تسويق",
+    "job_title_en": "Marketing Manager",
+    "wilaya": "وهران",
+    "wilaya_code": "31",
+    "experience_years": 6,
+    "salary_min": 90000,
+    "salary_max": 130000,
+    "company_type": "خاص",
+    "date_added": "2026-06-25"
+  },
+  {
+    "job_title": "محلل بيانات",
+    "job_title_en": "Data Analyst",
+    "wilaya": "عن بعد",
+    "wilaya_code": "00",
+    "experience_years": 2,
+    "salary_min": 120000,
+    "salary_max": 180000,
+    "company_type": "عن بعد",
+    "date_added": "2026-07-22"
+  },
+  {
+    "job_title": "مطور تطبيقات موبايل",
+    "job_title_en": "Mobile Developer",
+    "wilaya": "الجزائر",
+    "wilaya_code": "16",
+    "experience_years": 2,
+    "salary_min": 80000,
+    "salary_max": 110000,
+    "company_type": "خاص",
+    "date_added": "2026-07-30"
+  },
+  {
+    "job_title": "طبيب عام",
+    "job_title_en": "General Practitioner",
+    "wilaya": "بسكرة",
+    "wilaya_code": "07",
+    "experience_years": 3,
+    "salary_min": 90000,
+    "salary_max": 120000,
+    "company_type": "عمومي",
+    "date_added": "2026-01-19"
+  },
+  {
+    "job_title": "مهندس شبكات",
+    "job_title_en": "Network Engineer",
+    "wilaya": "بليدة",
+    "wilaya_code": "09",
+    "experience_years": 4,
+    "salary_min": 75000,
+    "salary_max": 100000,
+    "company_type": "خاص",
+    "date_added": "2026-05-07"
+  }
+]

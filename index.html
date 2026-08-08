@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رواتب.dz — إفصاح رواتب تشاركي</title>
+<meta name="description" content="خريطة رواتب تشاركية للجزائر، مبنية من مساهمات المطورين والباحثين عبر GitHub. بلا فورم، بلا سيرفر — البيانات مفتوحة للجميع.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <div>
+      <div class="eyebrow">استمارة رواتب تشاركية — مفتوحة المصدر</div>
+      <h1>رواتب.dz</h1>
+      <p class="tagline">كم يتقاضى الناس فعليا في الجزائر؟ بيانات يضيفها المساهمون مباشرة عبر Pull Request على GitHub — بلا فورم، بلا سيرفر، بلا وسيط.</p>
+    </div>
+    <div class="stamp" aria-hidden="true">
+      <div class="stamp-text">DZ<br>مصدَّق<br>2026</div>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <span class="stat-num mono" id="stat-count">—</span>
+      <span class="stat-label">تصريح راتب</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num mono" id="stat-wilayas">—</span>
+      <span class="stat-label">ولاية مغطاة</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num mono" id="stat-jobs">—</span>
+      <span class="stat-label">مهنة مختلفة</span>
+    </div>
+  </div>
+</header>
+
+<section class="filters" aria-label="تصفية النتائج">
+  <div class="field search">
+    <label for="f-search">ابحث عن مهنة</label>
+    <input type="text" id="f-search" placeholder="مثال: مطور، محاسب، ممرض...">
+  </div>
+  <div class="field">
+    <label for="f-wilaya">الولاية</label>
+    <select id="f-wilaya"><option value="">الكل</option></select>
+  </div>
+  <div class="field">
+    <label for="f-type">نوع الجهة</label>
+    <select id="f-type">
+      <option value="">الكل</option>
+      <option value="خاص">خاص</option>
+      <option value="عمومي">عمومي</option>
+      <option value="عن بعد">عن بعد</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-sort">الترتيب</label>
+    <select id="f-sort">
+      <option value="recent">الأحدث</option>
+      <option value="salary-desc">الراتب: من الأعلى</option>
+      <option value="salary-asc">الراتب: من الأدنى</option>
+    </select>
+  </div>
+</section>
+
+<section class="chart-panel">
+  <h2>متوسط الراتب حسب المهنة (أعلى 8)</h2>
+  <div class="chart-wrap">
+    <canvas id="salaryChart" height="90"></canvas>
+  </div>
+</section>
+
+<p class="results-meta" id="results-meta"></p>
+
+<section class="grid" id="grid" aria-label="قائمة الرواتب"></section>
+
+<section class="contribute" id="contribute">
+  <div class="contribute-inner">
+    <h2>زيد راتبك للسجل</h2>
+    <p>ما كاين حتى فورم. تعدل ملف JSON مباشرة وتبعث Pull Request — نفس الطريقة اللي بيها يتطور أي مشروع مفتوح المصدر.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num mono">01</div>
+        <div class="step-body">
+          <h3>افتح الملف</h3>
+          <p>روح لملف <code class="mono">salaries.json</code> فالمستودع، واضغط على أيقونة القلم للتعديل (Fork تلقائي).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num mono">02</div>
+        <div class="step-body">
+          <h3>زيد سطرك</h3>
+          <p>انسخ القالب تحت وعدل القيم حسب وضعيتك، وحطه فآخر القائمة.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num mono">03</div>
+        <div class="step-body">
+          <h3>ابعث Pull Request</h3>
+          <p>اضغط "Propose changes" ثم "Create pull request". فريق تلقائي (GitHub Action) يتأكد من صحة الفورمات قبل الدمج.</p>
+        </div>
+      </div>
+    </div>
+
+    <pre class="snippet"><code>{
+  "job_title": "اسم المهنة بالعربية",
+  "job_title_en": "Job Title in English",
+  "wilaya": "اسم الولاية",
+  "wilaya_code": "16",
+  "experience_years": 3,
+  "salary_min": 60000,
+  "salary_max": 90000,
+  "company_type": "خاص",
+  "date_added": "2026-08-08"
+}</code></pre>
+
+    <div class="signature-line">
+      <a class="btn" href="https://github.com/" id="pr-link" target="_blank" rel="noopener">فتح الملف على GitHub</a>
+      <a class="btn btn-outline" href="https://github.com/" id="repo-link" target="_blank" rel="noopener">★ المستودع</a>
+    </div>
+  </div>
+</section>
+
+<footer>SalaryDZ — بيانات من المجتمع، للمجتمع. آخر تحديث: تلقائي مع كل Pull Request مدموج.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
