@@ -1,7 +1,29 @@
 (function () {
   "use strict";
 
+  // TODO: بدّل هذا برابط مستودعك الحقيقي على GitHub بعد الرفع — نقطة تعديل وحيدة
+  const REPO_URL = "https://github.com/USERNAME/salarydz";
+  const PENDING_KEY = "salarydz:pending-submissions";
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Full list of Algeria's 58 wilayas + remote work, used to populate the contribution form
+  // regardless of which wilayas already have data.
+  const ALL_WILAYAS = [
+    ["01","أدرار"],["02","الشلف"],["03","الأغواط"],["04","أم البواقي"],["05","باتنة"],
+    ["06","بجاية"],["07","بسكرة"],["08","بشار"],["09","بليدة"],["10","البويرة"],
+    ["11","تمنراست"],["12","تبسة"],["13","تلمسان"],["14","تيارت"],["15","تيزي وزو"],
+    ["16","الجزائر"],["17","الجلفة"],["18","جيجل"],["19","سطيف"],["20","سعيدة"],
+    ["21","سكيكدة"],["22","سيدي بلعباس"],["23","عنابة"],["24","قالمة"],["25","قسنطينة"],
+    ["26","المدية"],["27","مستغانم"],["28","المسيلة"],["29","معسكر"],["30","ورقلة"],
+    ["31","وهران"],["32","البيض"],["33","إليزي"],["34","برج بوعريريج"],["35","بومرداس"],
+    ["36","الطارف"],["37","تندوف"],["38","تيسمسيلت"],["39","الوادي"],["40","خنشلة"],
+    ["41","سوق أهراس"],["42","تيبازة"],["43","ميلة"],["44","عين الدفلى"],["45","النعامة"],
+    ["46","عين تيموشنت"],["47","غرداية"],["48","غليزان"],["49","تيميمون"],
+    ["50","برج باجي مختار"],["51","أولاد جلال"],["52","بني عباس"],["53","عين صالح"],
+    ["54","عين قزام"],["55","تقرت"],["56","جانت"],["57","المغير"],["58","المنيعة"],
+    ["00","عن بعد"],
+  ];
 
   let DATA = [];
   let chart = null;
@@ -16,28 +38,85 @@
     statCount: document.getElementById("stat-count"),
     statWilayas: document.getElementById("stat-wilayas"),
     statJobs: document.getElementById("stat-jobs"),
+    form: document.getElementById("contribute-form"),
+    cJobAr: document.getElementById("c-job-ar"),
+    cJobEn: document.getElementById("c-job-en"),
+    cWilaya: document.getElementById("c-wilaya"),
+    cExp: document.getElementById("c-exp"),
+    cMin: document.getElementById("c-min"),
+    cMax: document.getElementById("c-max"),
+    cTypeGroup: document.getElementById("c-type"),
+    cfError: document.getElementById("cf-error"),
+    cfSuccess: document.getElementById("cf-success"),
+    issueLink: document.getElementById("issue-link"),
+    copyJsonBtn: document.getElementById("copy-json"),
+    clearPendingBtn: document.getElementById("clear-pending"),
+    lastUpdated: document.getElementById("last-updated"),
   };
   let activeType = "";
+  let activeContribType = "خاص";
+  let lastSubmittedEntry = null;
 
   // stagger delays for the hero reveal sequence
   document.querySelectorAll("[data-reveal]").forEach((el) => {
     el.style.setProperty("--i", el.dataset.reveal);
   });
 
+  document.getElementById("repo-link").href = REPO_URL;
+  const rawJsonLink = document.getElementById("raw-json-link");
+  if (rawJsonLink) rawJsonLink.href = REPO_URL + "/blob/main/salaries.json";
+
+  populateFormWilayaSelect();
+
   fetch("salaries.json")
     .then((r) => r.json())
     .then((data) => {
-      DATA = data;
-      populateWilayaFilter(data);
-      animateStats(data);
+      DATA = mergePending(data);
+      populateWilayaFilter(DATA);
+      animateStats(DATA);
       render();
-      renderChart(data);
-      initNetworkMap([...new Set(data.map((d) => d.wilaya_code))]);
+      renderChart(DATA);
+      initNetworkMap([...new Set(DATA.map((d) => d.wilaya_code))]);
+      updateLastUpdated(data); // based on officially-merged data only, not local pending entries
     })
     .catch(() => {
       els.grid.innerHTML =
         '<div class="empty">تعذر تحميل البيانات. إذا كنت تفتح الملف محليا، شغّل خادم بسيط (مثلا: python -m http.server) لأن المتصفح يمنع قراءة JSON مباشرة من نظام الملفات.</div>';
     });
+
+  function populateFormWilayaSelect() {
+    if (!els.cWilaya) return;
+    ALL_WILAYAS.forEach(([code, name]) => {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.dataset.name = name;
+      opt.textContent = `${code} — ${name}`;
+      els.cWilaya.appendChild(opt);
+    });
+  }
+
+  function updateLastUpdated(officialData) {
+    if (!els.lastUpdated || !officialData.length) return;
+    const latest = officialData.reduce((max, d) => (d.date_added > max ? d.date_added : max), officialData[0].date_added);
+    els.lastUpdated.textContent = `آخر تحديث رسمي: ${latest}`;
+  }
+
+  function loadPending() {
+    try {
+      return JSON.parse(localStorage.getItem(PENDING_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function savePending(list) {
+    try { localStorage.setItem(PENDING_KEY, JSON.stringify(list)); } catch {}
+  }
+
+  function mergePending(officialData) {
+    const pending = loadPending().map((d) => ({ ...d, __pending: true }));
+    return [...pending, ...officialData];
+  }
 
   function populateWilayaFilter(data) {
     const seen = new Map();
@@ -116,7 +195,8 @@
 
   function cardHTML(d, i) {
     return `
-      <article class="stub" style="--i:${i}">
+      <article class="stub${d.__pending ? " is-pending" : ""}" style="--i:${i}">
+        ${d.__pending ? '<span class="pending-badge mono">بانتظار المراجعة</span>' : ""}
         <div class="stub-top">
           <div>
             <div class="stub-job">${escapeHTML(d.job_title)}</div>
@@ -216,6 +296,108 @@
     activeType = btn.dataset.value;
     render();
   });
+
+  // ===== Contribution form =====
+  if (els.cTypeGroup) {
+    els.cTypeGroup.addEventListener("click", (e) => {
+      const btn = e.target.closest(".seg-btn");
+      if (!btn) return;
+      els.cTypeGroup.querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      activeContribType = btn.dataset.value;
+    });
+  }
+
+  if (els.form) {
+    els.form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      els.cfError.textContent = "";
+
+      const jobAr = els.cJobAr.value.trim();
+      const jobEn = els.cJobEn.value.trim() || jobAr;
+      const wilayaOpt = els.cWilaya.selectedOptions[0];
+      const exp = Number(els.cExp.value);
+      const smin = Number(els.cMin.value);
+      const smax = Number(els.cMax.value);
+
+      if (!jobAr) return showFormError("دخل اسم المهنة بالعربية.");
+      if (!wilayaOpt || !wilayaOpt.value) return showFormError("اختر الولاية.");
+      if (!Number.isFinite(exp) || exp < 0) return showFormError("سنوات الخبرة لازم تكون رقم موجب.");
+      if (!smin || !smax) return showFormError("دخل أقل وأعلى راتب.");
+      if (smin > smax) return showFormError("أقل راتب لازم يكون أصغر من أعلى راتب.");
+      if (smin < 15000 || smax > 2000000) return showFormError("قيمة الراتب خارجة عن النطاق المعقول.");
+
+      const entry = {
+        job_title: jobAr,
+        job_title_en: jobEn,
+        wilaya: wilayaOpt.dataset.name,
+        wilaya_code: wilayaOpt.value,
+        experience_years: exp,
+        salary_min: smin,
+        salary_max: smax,
+        company_type: activeContribType,
+        date_added: new Date().toISOString().slice(0, 10),
+      };
+
+      const pending = loadPending();
+      pending.unshift(entry);
+      savePending(pending);
+      lastSubmittedEntry = entry;
+
+      DATA = [{ ...entry, __pending: true }, ...DATA];
+      animateStats(DATA);
+      render();
+      renderChart(DATA);
+
+      buildIssueLink(entry);
+      els.cfSuccess.hidden = false;
+      els.cfSuccess.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    });
+  }
+
+  function showFormError(msg) {
+    els.cfError.textContent = msg;
+  }
+
+  function buildIssueLink(entry) {
+    if (!els.issueLink) return;
+    const title = `تصريح راتب: ${entry.job_title} — ${entry.wilaya}`;
+    const body = [
+      "تصريح راتب جديد لدمجه في salaries.json:",
+      "",
+      "```json",
+      JSON.stringify(entry, null, 2),
+      "```",
+    ].join("\n");
+    const url = `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&labels=data-submission`;
+    els.issueLink.href = url;
+  }
+
+  if (els.copyJsonBtn) {
+    els.copyJsonBtn.addEventListener("click", async () => {
+      if (!lastSubmittedEntry) return;
+      const text = JSON.stringify(lastSubmittedEntry, null, 2);
+      try {
+        await navigator.clipboard.writeText(text);
+        els.copyJsonBtn.textContent = "✓ اتنسخ";
+        setTimeout(() => (els.copyJsonBtn.textContent = "انسخ JSON"), 1600);
+      } catch {
+        showFormError("تعذر النسخ التلقائي — انسخ من صندوق الكود تحت.");
+      }
+    });
+  }
+
+  if (els.clearPendingBtn) {
+    els.clearPendingBtn.addEventListener("click", () => {
+      savePending([]);
+      DATA = DATA.filter((d) => !d.__pending);
+      animateStats(DATA);
+      render();
+      renderChart(DATA);
+      els.cfSuccess.hidden = true;
+      lastSubmittedEntry = null;
+    });
+  }
 
   // ===== Scroll reveal for panels =====
   const io = new IntersectionObserver(

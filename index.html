@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>رواتب.dz — إفصاح رواتب تشاركي</title>
-<link rel="icon" href="./favicon.ico">
 <meta name="description" content="خريطة رواتب تشاركية حية للجزائر، مبنية من مساهمات المطورين والباحثين عبر GitHub. بلا فورم، بلا سيرفر — البيانات مفتوحة للجميع.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,33 +91,88 @@
     <div class="contribute-inner">
       <span class="eyebrow">مساهمة مباشرة</span>
       <h2>زيد راتبك للسجل</h2>
-      <p>ما كاين حتى فورم. تعدل ملف JSON مباشرة وتبعث Pull Request — نفس الطريقة اللي بيها يتطور أي مشروع مفتوح المصدر.</p>
+      <p>عبّي المعلومات تحت. راتبك يبان فورا فالقائمة فوق (فمتصفحك أنت)، وبضغطة وحدة تقدر تبعثو للمراجعة باش يندمج فالسجل الرسمي.</p>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-num mono">01</div>
-          <div class="step-body">
-            <h3>افتح الملف</h3>
-            <p>روح لملف <code class="mono">salaries.json</code> فالمستودع، واضغط على أيقونة القلم للتعديل (Fork تلقائي).</p>
+      <form id="contribute-form" class="contribute-form" novalidate>
+        <div class="cf-row">
+          <div class="field">
+            <label for="c-job-ar">المهنة (بالعربية)</label>
+            <input type="text" id="c-job-ar" required placeholder="مثال: مطور برمجيات">
+          </div>
+          <div class="field">
+            <label for="c-job-en">المهنة (بالإنجليزية)</label>
+            <input type="text" id="c-job-en" placeholder="Software Developer">
           </div>
         </div>
-        <div class="step">
-          <div class="step-num mono">02</div>
-          <div class="step-body">
-            <h3>زيد سطرك</h3>
-            <p>انسخ القالب تحت وعدل القيم حسب وضعيتك، وحطه فآخر القائمة.</p>
+        <div class="cf-row">
+          <div class="field">
+            <label for="c-wilaya">الولاية</label>
+            <select id="c-wilaya" required></select>
+          </div>
+          <div class="field">
+            <label for="c-exp">سنوات الخبرة</label>
+            <input type="number" id="c-exp" min="0" max="45" value="1" required>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num mono">03</div>
-          <div class="step-body">
-            <h3>ابعث Pull Request</h3>
-            <p>اضغط "Propose changes" ثم "Create pull request". فريق تلقائي (GitHub Action) يتأكد من صحة الفورمات قبل الدمج.</p>
+        <div class="cf-row">
+          <div class="field">
+            <label for="c-min">أقل راتب (دج/شهر)</label>
+            <input type="number" id="c-min" min="15000" step="1000" placeholder="60000" required>
           </div>
+          <div class="field">
+            <label for="c-max">أعلى راتب (دج/شهر)</label>
+            <input type="number" id="c-max" min="15000" step="1000" placeholder="90000" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>نوع الجهة</label>
+          <div class="segmented" id="c-type" role="radiogroup" aria-label="نوع الجهة">
+            <button type="button" class="seg-btn is-active" data-value="خاص">خاص</button>
+            <button type="button" class="seg-btn" data-value="عمومي">عمومي</button>
+            <button type="button" class="seg-btn" data-value="عن بعد">عن بعد</button>
+          </div>
+        </div>
+        <p class="cf-error mono" id="cf-error" role="alert"></p>
+        <button type="submit" class="btn btn-primary">أضف راتبي للقائمة</button>
+      </form>
+
+      <div class="cf-success" id="cf-success" hidden>
+        <p class="cf-success-title">✓ زيد راتبك للقائمة فوق — بانتظار المراجعة</p>
+        <p class="cf-success-note">هاذ العرض محلي فمتصفحك بس. باش يوصل للسجل الرسمي ويشوفوه الجميع، ابعثو عبر GitHub:</p>
+        <div class="signature-line">
+          <a class="btn btn-primary" href="#" id="issue-link" target="_blank" rel="noopener">ابعث للمراجعة عبر GitHub</a>
+          <button type="button" class="btn btn-ghost" id="copy-json">انسخ JSON</button>
+          <button type="button" class="btn btn-ghost" id="clear-pending">امسح مساهماتي المحلية</button>
         </div>
       </div>
 
-      <pre class="snippet mono"><code>{
+      <details class="cf-manual">
+        <summary>ولا تفضل التعديل اليدوي مباشرة على GitHub</summary>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num mono">01</div>
+            <div class="step-body">
+              <h3>افتح الملف</h3>
+              <p>روح لملف <code class="mono">salaries.json</code> فالمستودع، واضغط على أيقونة القلم للتعديل (Fork تلقائي).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num mono">02</div>
+            <div class="step-body">
+              <h3>زيد سطرك</h3>
+              <p>انسخ القالب تحت وعدل القيم حسب وضعيتك، وحطه فآخر القائمة.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num mono">03</div>
+            <div class="step-body">
+              <h3>ابعث Pull Request</h3>
+              <p>اضغط "Propose changes" ثم "Create pull request". فريق تلقائي (GitHub Action) يتأكد من صحة الفورمات قبل الدمج.</p>
+            </div>
+          </div>
+        </div>
+
+        <pre class="snippet mono"><code>{
   "job_title": "اسم المهنة بالعربية",
   "job_title_en": "Job Title in English",
   "wilaya": "اسم الولاية",
@@ -129,10 +183,32 @@
   "company_type": "خاص",
   "date_added": "2026-08-08"
 }</code></pre>
+      </details>
+
       <div class="signature-line">
-        <a class="btn btn-primary" href="https://github.com/LechehebDjaafar" id="pr-link" target="_blank" rel="noopener">فتح الملف على GitHub</a>
         <a class="btn btn-ghost" href="https://github.com/LechehebDjaafar/SalaryDz2026" id="repo-link" target="_blank" rel="noopener">★ نجّم المستودع</a>
       </div>
+    </div>
+  </section>
+
+  <section class="panel sources-panel reveal-on-scroll" id="sources">
+    <div class="panel-head">
+      <h2>المصادر والمنهجية</h2>
+      <span class="panel-tag mono" id="last-updated">—</span>
+    </div>
+    <p class="sources-text">
+      كل رقم فهاذ الصفحة هو تصريح ذاتي — إما عبر النموذج فوق، أو Pull Request مباشر على GitHub. ما كاين تحقق من طرف جهة رسمية ولا مقارنة ببيانات الضمان الاجتماعي؛ الـ GitHub Action يتحقق بس من صحة الفورمات (أرقام منطقية، حقول كاملة) — ماشي من صحة الرقم فحد ذاته. لمهن أو ولايات بعدد قليل من التصاريح، متوسط الراتب قد ما يكون ممثل.
+    </p>
+    <div class="sources-links">
+      <a class="src-link" href="https://github.com/LechehebDjaafar/SalaryDz2026/blob/main/salaries.json" id="raw-json-link" target="_blank" rel="noopener">
+        <span class="src-link-title mono">salaries.json</span>
+        <span class="src-link-desc">البيانات الخام كاملة، بلا تعديل</span>
+      </a>
+      <a class="src-link" href="https://www.ons.dz" target="_blank" rel="noopener">
+        <span class="src-link-title mono">ons.dz</span>
+        <span class="src-link-desc">الديوان الوطني للإحصائيات — للسياق والمقارنة مع الأرقام الرسمية</span>
+      </a>
+    </div>
   </section>
 </main>
 
